@@ -28,4 +28,29 @@ void salva_cliente(struct Cliente lista[], int Quantidade_De_Clientes) {
 void NovoCliente(){
     printf("Bom dia seu puta\n");
 
+}
+void ApagaCliente(){
+    printf("funciona\n");
+
+}
+
+void ListarClientes(){
+    printf("funciona\n");
+
+}
+
+void debito(){
+    printf("topp\n");
+
+}
+void deposito(){
+    printf("muito money\n");
+
+}
+void extrato(){
+    printf("quanto tem\n");
+
+}
+void transferencia(){
+    printf("vamos la\n");
 };

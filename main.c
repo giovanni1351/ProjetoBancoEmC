@@ -31,16 +31,22 @@ int main() {
                 NovoCliente();
                 break;
             case 2:
+                ApagaCliente();
                 break;
             case 3:
+                ListarClientes();
                 break;
             case 4:
+                debito();
                 break;
             case 5:
+                deposito();
                 break;
             case 6:
+                extrato();
                 break;
             case 7:
+                transferencia();
                 break;
             case 8:
                 ver = 1;

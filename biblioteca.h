@@ -17,6 +17,13 @@ typedef struct Cliente;
 void salva_cliente(struct Cliente lista[], int quantidadeDeTarefas);
 void ler_clientes(struct Cliente lista[], int *Quantidade_De_Clientes);
 void NovoCliente();
+void ApagaCliente();
+void ListarClientes();
+void debito();
+void deposito();
+void extrato();
+void transferencia();
+
 
 
 #endif //PROJETOBANCO_BIBLIOTECA_H
