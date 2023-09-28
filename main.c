@@ -28,6 +28,7 @@ int main() {
         }
         switch (opcao) {
             case 1:
+                NovoCliente();
                 break;
             case 2:
                 break;

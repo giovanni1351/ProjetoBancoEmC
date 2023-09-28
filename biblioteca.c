@@ -25,3 +25,7 @@ void salva_cliente(struct Cliente lista[], int Quantidade_De_Clientes) {
         fclose(arquivo);//fecha o arquivo
     }
 }
+void NovoCliente(){
+    printf("Bom dia seu puta\n");
+
+};
