@@ -5,7 +5,6 @@ int main() {
     struct Cliente *lista=malloc(sizeof(struct Cliente)*1000);
     int Quantidade_De_Clientes = 0;
     ler_clientes(lista,&Quantidade_De_Clientes);
-    printf("porra");
     while (1) {
         int opcao = 0, ver = 0;
 
@@ -53,7 +52,9 @@ int main() {
                 break;
         }
         if (ver == 1) {
+            salva_cliente(lista,Quantidade_De_Clientes);
             break;
+
         }
     }
 

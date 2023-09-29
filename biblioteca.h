@@ -8,7 +8,7 @@
 
 struct Cliente{
     char nome[100];
-    long long int cpf;
+    char cpf[15];
     double saldo;
     char extrato[100][1000];
     long long int senha;
