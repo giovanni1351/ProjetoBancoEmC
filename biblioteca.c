@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 void ler_clientes(struct Cliente lista[], int *Quantidade_De_Clientes) {
-    FILE *arquivo = fopen("tarefas", "rb");//ele abre o arquivo como ler binario
+    FILE *arquivo = fopen("Dados", "rb");//ele abre o arquivo como ler binario
     if (arquivo) {//se obter sucesso ele vai ler com o fread e armazenara no arquivo aberto
         //as informaçoes ficarão na lista q foi passada como parametro
         while (fread(&lista[*Quantidade_De_Clientes], sizeof(struct Cliente), 1, arquivo) == 1) {
@@ -18,7 +18,7 @@ void ler_clientes(struct Cliente lista[], int *Quantidade_De_Clientes) {
     }
 }
 void salva_cliente(struct Cliente lista[], int Quantidade_De_Clientes) {
-    FILE *arquivo = fopen("tarefas", "wb");//abre o arquivo como write em binario
+    FILE *arquivo = fopen("Dados", "wb");//abre o arquivo como write em binario
 
     if (arquivo) {//se ele obter sucesso
         //ele escreve tudo da lista de structs no arquivo q foi aberta
@@ -31,17 +31,20 @@ void NovoCliente(struct Cliente *lista,int *Quantidade_De_Clientes){
     long long int senha,tipo;
     char cpf[15];
     int encontrado = 0;
+    int idEncontrado;
     scanf("%s",cpf);
     for (int x = 0; x < (*Quantidade_De_Clientes); x++) {
 
         if (strcmp(cpf,lista[x].cpf)==0) {
             printf("Cliente ja registrado!\n");
             encontrado = 1;
+            idEncontrado =x;
         }
     }
     if (encontrado == 0) {
         Cliente atual;
         atual.saldo =0;
+        atual.transacoes =0;
         strcpy(atual.cpf,cpf);
         printf("Digite seu nome:\n");
         char nome[100];
@@ -57,7 +60,18 @@ void NovoCliente(struct Cliente *lista,int *Quantidade_De_Clientes){
         (*Quantidade_De_Clientes)++;
     }
     else {
+        Cliente C_encontrado = lista[idEncontrado];
 
+        int trocar;
+        printf("Voce deseja alterar a senha?(1.sim 2.nao)\n");
+        scanf("%d",&trocar);
+        if(trocar ==1){
+            int nova_senha;
+            printf("Digite a nova senha:\n");
+            scanf("%d",&nova_senha);
+            C_encontrado.senha = nova_senha;
+            lista[idEncontrado] = C_encontrado;
+        }
     }
     printf("\n");
 }
@@ -72,6 +86,8 @@ void ListarClientes(struct Cliente* lista, int Quantidade_De_Clientes){
         printf("Nome: %s\n",lista[x].nome);
         printf("CPF: %s\n",lista[x].cpf);
         printf("Tipo da conta: %d\n",lista[x].tipo);
+        printf("Senha da conta: %d\n",lista[x].senha);
+        printf("Saldo da conta: %d\n",lista[x].saldo);
         printf("\n");
         printf("\n");
 
@@ -79,41 +95,74 @@ void ListarClientes(struct Cliente* lista, int Quantidade_De_Clientes){
 
 }
 void debito(struct Cliente *lista, int Quantidade_De_Clientes) {
-    int cpf, valor;
-    printf("Digite o CPF: ");
-    scanf("%d", &cpf);
-    printf("Valor do débito: ");
-    scanf("%d", &valor);
+    int  senha;
+    char cpf[15];
+    printf("Digite o CPF: \n");
+    scanf("%s", &cpf);
+    int idEncontrado;
+    int encontrado =0;
+    for(int x = 0 ; x < Quantidade_De_Clientes;x++){
+        if(strcmp(cpf,lista[x].cpf)==0){
 
-    for (int i = 0; i < Quantidade_De_Clientes; i++) {
-        if (lista[i].cpf == cpf) {
-            if (lista[i].saldo >= valor) {
-                lista[i].saldo -= valor;
-                printf("Débito de %d realizado com sucesso. Saldo:", valor, lista[i].saldo);
-            } else {
-                printf("Saldo insuficiente\n");
-            }
-            return;
+            idEncontrado =x;
+            encontrado =1;
+            printf("encontrado id: %d!\n",x);
+            break;
         }
     }
-    printf("Cliente com cpf %d não encontrado.\n", cpf);
+    if(encontrado ==1){
+        printf("Digite sua senha: \n");
+        int senhaConta = lista[idEncontrado].senha;
+        printf("%d\n",lista[idEncontrado].senha);
+        scanf("%d", &senha);
+        if(senha == senhaConta){
+            double valor;
+            double saldo_cliente = lista[idEncontrado].saldo;
+            printf("Valor do débito:\n ");
+            scanf("%d", &valor);
+            saldo_cliente -= valor;
+            lista[idEncontrado].saldo = saldo_cliente;
+            printf("Saldo atual: %d \n",lista[idEncontrado].saldo);
+            printf("%d \n",saldo_cliente);
+        }
+        else{
+            printf("Senha incorreta!\n");
+        }
+    }
+    if(encontrado ==0){
+        printf("Cliente com cpf %s não encontrado.\n", cpf);
+    }
 }
 
 void deposito(struct Cliente *lista, int Quantidade_De_Clientes) {
-    int cpf, valor;
-    printf("Digite o cpf: ");
-    scanf("%d", &cpf);
-    printf("Valor do depósito: ");
-    scanf("%d", &valor);
+    int  senha;
+    char cpf[15];
+    printf("Digite o CPF: \n");
+    scanf("%s", &cpf);
+    int idEncontrado;
+    int encontrado =0;
+    for(int x = 0 ; x < Quantidade_De_Clientes;x++){
+        if(strcmp(cpf,lista[x].cpf)==0){
 
-    for (int i = 0; i < Quantidade_De_Clientes; i++) {
-        if (lista[i].cpf == cpf) {
-            lista[i].saldo += valor;
-            printf("Depósito de %d realizado com sucesso.Saldo: %d\n", valor, lista[i].saldo);
-            return;
+            idEncontrado =x;
+            encontrado =1;
+            printf("encontrado id: %d!\n",x);
+            break;
         }
     }
-    printf("Cliente com cpf %d não encontrado.\n", cpf);
+    if(encontrado ==1){
+            double valor;
+            double saldo_cliente = lista[idEncontrado].saldo;
+            printf("Valor do deposito:\n ");
+            scanf("%d", &valor);
+            saldo_cliente += valor;
+            lista[idEncontrado].saldo = saldo_cliente;
+            printf("Saldo atual: %d \n",lista[idEncontrado].saldo);
+            printf("%d \n",saldo_cliente);
+    }
+    if(encontrado ==0){
+        printf("Cliente com cpf %s não encontrado.\n", cpf);
+    }
 }
 
 

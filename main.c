@@ -2,7 +2,7 @@
 #include "biblioteca.h"
 
 int main() {
-    struct Cliente *lista=malloc(sizeof(struct Cliente)*1000);
+    Cliente *lista=(Cliente*)malloc(sizeof(struct Cliente)*1000);
     int Quantidade_De_Clientes = 0;
     ler_clientes(lista,&Quantidade_De_Clientes);
     while (1) {
@@ -36,10 +36,10 @@ int main() {
                 ListarClientes(lista,Quantidade_De_Clientes);
                 break;
             case 4:
-                debito();
+                debito(lista,Quantidade_De_Clientes);
                 break;
             case 5:
-                deposito();
+                deposito(lista,Quantidade_De_Clientes);
                 break;
             case 6:
                 extrato();

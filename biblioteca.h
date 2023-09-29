@@ -10,6 +10,7 @@ struct Cliente{
     char nome[100];
     char cpf[15];
     double saldo;
+    int transacoes;
     char extrato[100][1000];
     long long int senha;
     int tipo ;
@@ -22,8 +23,8 @@ void ler_clientes(struct Cliente lista[], int *Quantidade_De_Clientes);
 void NovoCliente(struct Cliente* lista, int* Quantidade_De_Clientes);
 void ApagaCliente();
 void ListarClientes(struct Cliente* lista, int Quantidade_De_Clientes);
-void debito();
-void deposito();
+void debito(struct Cliente *lista, int Quantidade_De_Clientes);
+void deposito(struct Cliente *lista, int Quantidade_De_Clientes) ;
 void extrato();
 void transferencia();
 
