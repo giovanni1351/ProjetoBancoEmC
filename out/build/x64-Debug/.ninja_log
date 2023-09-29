@@ -1,0 +1,15 @@
+# ninja log v5
+20	121	7176602090593866	CMakeFiles/ProjetoBanco.dir/biblioteca.c.obj	e71dfb291b2d9920
+5	123	7176602090603840	CMakeFiles/ProjetoBanco.dir/main.c.obj	3e3259611dac5849
+123	562	7176602094752736	ProjetoBanco.exe	e1b06378cc88194f
+5	103	7176622171491292	CMakeFiles/ProjetoBanco.dir/main.c.obj	3e3259611dac5849
+20	107	7176622171531187	CMakeFiles/ProjetoBanco.dir/biblioteca.c.obj	e71dfb291b2d9920
+108	681	7176622174582227	ProjetoBanco.exe	e1b06378cc88194f
+27	323	7176623055946641	CMakeFiles/ProjetoBanco.dir/biblioteca.c.obj	e71dfb291b2d9920
+13	332	7176623055926696	CMakeFiles/ProjetoBanco.dir/main.c.obj	3e3259611dac5849
+333	595	7176623058051013	ProjetoBanco.exe	e1b06378cc88194f
+14	153	7176623863973504	CMakeFiles/ProjetoBanco.dir/main.c.obj	3e3259611dac5849
+14	323	7176624282141934	CMakeFiles/ProjetoBanco.dir/biblioteca.c.obj	e71dfb291b2d9920
+325	657	7176624284944428	ProjetoBanco.exe	e1b06378cc88194f
+15	304	7176624882556625	CMakeFiles/ProjetoBanco.dir/biblioteca.c.obj	e71dfb291b2d9920
+305	546	7176624884411659	ProjetoBanco.exe	e1b06378cc88194f

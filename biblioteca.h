@@ -4,21 +4,24 @@
 
 #ifndef PROJETOBANCO_BIBLIOTECA_H
 #define PROJETOBANCO_BIBLIOTECA_H
-#include "stdlib.h"
+#include <stdlib.h>
+
 struct Cliente{
     char nome[100];
-    int cpf;
+    long long int cpf;
     double saldo;
     char extrato[100][1000];
-    int senha;
-    int tipo;
+    long long int senha;
+    int tipo ;
 };
-typedef struct Cliente;
+
+
+typedef struct Cliente Cliente;
 void salva_cliente(struct Cliente lista[], int quantidadeDeTarefas);
 void ler_clientes(struct Cliente lista[], int *Quantidade_De_Clientes);
-void NovoCliente();
+void NovoCliente(struct Cliente* lista, int* Quantidade_De_Clientes);
 void ApagaCliente();
-void ListarClientes();
+void ListarClientes(struct Cliente* lista, int Quantidade_De_Clientes);
 void debito();
 void deposito();
 void extrato();

@@ -1,0 +1,3 @@
+C:/Users/giova/source/repos/ProjetoBancoEmC/out/build/x64-Debug/CMakeFiles/ProjetoBanco.dir
+C:/Users/giova/source/repos/ProjetoBancoEmC/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/giova/source/repos/ProjetoBancoEmC/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir

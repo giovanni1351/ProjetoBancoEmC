@@ -28,13 +28,13 @@ int main() {
         }
         switch (opcao) {
             case 1:
-                NovoCliente();
+                NovoCliente(lista,&Quantidade_De_Clientes);
                 break;
             case 2:
                 ApagaCliente();
                 break;
             case 3:
-                ListarClientes();
+                ListarClientes(lista,Quantidade_De_Clientes);
                 break;
             case 4:
                 debito();
