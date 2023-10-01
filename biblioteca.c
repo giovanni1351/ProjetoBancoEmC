@@ -75,9 +75,35 @@ void NovoCliente(struct Cliente *lista,int *Quantidade_De_Clientes){
     }
     printf("\n");
 }
-void ApagaCliente(){
-    printf("funciona\n");
-
+void ApagaCliente(struct Cliente* lista, int* Quantidade_De_Clientes){
+    printf("Digite seu CPF:\n");
+    char cpf[15];
+    int encontrado = 0;
+    int idEncontrado;
+    int deletar = 0;
+    scanf("%s", cpf);
+    for (int x = 0; x < (*Quantidade_De_Clientes); x++) {
+        if (strcmp(lista[x].cpf, cpf) == 0) {
+            
+            encontrado = 1;
+            idEncontrado = x;
+        }
+    }
+    if (encontrado == 1) {
+        printf("Digite sua senha: \n");
+        long long int senha;
+        scanf("%d", &senha);
+        if (senha == lista[idEncontrado].senha) {
+            deletar = 1;
+        }
+    }
+    if (deletar == 1) {
+        for (int x = idEncontrado; x < (*Quantidade_De_Clientes); x++) {
+            lista[x] = lista[x + 1];
+        }
+        (*Quantidade_De_Clientes) -= 1;
+        printf("Cliente deletado com sucesso!\n");
+    }
 }
 void ListarClientes(struct Cliente* lista, int Quantidade_De_Clientes){
     printf("Quantidade de Clientes atuais: %d\n",Quantidade_De_Clientes);

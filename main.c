@@ -30,7 +30,7 @@ int main() {
                 NovoCliente(lista,&Quantidade_De_Clientes);
                 break;
             case 2:
-                ApagaCliente();
+                ApagaCliente(lista,&Quantidade_De_Clientes);
                 break;
             case 3:
                 ListarClientes(lista,Quantidade_De_Clientes);

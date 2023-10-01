@@ -21,7 +21,7 @@ typedef struct Cliente Cliente;
 void salva_cliente(struct Cliente lista[], int quantidadeDeTarefas);
 void ler_clientes(struct Cliente lista[], int *Quantidade_De_Clientes);
 void NovoCliente(struct Cliente* lista, int* Quantidade_De_Clientes);
-void ApagaCliente();
+void ApagaCliente(struct Cliente* lista, int* Quantidade_De_Clientes);
 void ListarClientes(struct Cliente* lista, int Quantidade_De_Clientes);
 void debito(struct Cliente *lista, int Quantidade_De_Clientes);
 void deposito(struct Cliente *lista, int Quantidade_De_Clientes) ;
