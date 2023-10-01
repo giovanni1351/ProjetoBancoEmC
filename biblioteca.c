@@ -87,7 +87,7 @@ void ListarClientes(struct Cliente* lista, int Quantidade_De_Clientes){
         printf("CPF: %s\n",lista[x].cpf);
         printf("Tipo da conta: %d\n",lista[x].tipo);
         printf("Senha da conta: %d\n",lista[x].senha);
-        printf("Saldo da conta: %d\n",lista[x].saldo);
+        printf("Saldo da conta: %lf\n",lista[x].saldo);
         printf("\n");
         printf("\n");
 
@@ -117,13 +117,13 @@ void debito(struct Cliente *lista, int Quantidade_De_Clientes) {
         scanf("%d", &senha);
         if(senha == senhaConta){
             double valor;
-            double saldo_cliente = lista[idEncontrado].saldo;
             printf("Valor do débito:\n ");
-            scanf("%d", &valor);
-            saldo_cliente -= valor;
-            lista[idEncontrado].saldo = saldo_cliente;
-            printf("Saldo atual: %d \n",lista[idEncontrado].saldo);
-            printf("%d \n",saldo_cliente);
+            scanf("%lf", &valor);
+            //double saldo_cliente = lista[idEncontrado].saldo-valor;
+            //lista[idEncontrado].saldo = saldo_cliente;
+            lista[idEncontrado].saldo -= valor;
+            printf("Saldo atual: %lf \n",lista[idEncontrado].saldo);
+            //printf("%lf \n",saldo_cliente);
         }
         else{
             printf("Senha incorreta!\n");
@@ -154,11 +154,11 @@ void deposito(struct Cliente *lista, int Quantidade_De_Clientes) {
             double valor;
             double saldo_cliente = lista[idEncontrado].saldo;
             printf("Valor do deposito:\n ");
-            scanf("%d", &valor);
+            scanf("%lf", &valor);
             saldo_cliente += valor;
             lista[idEncontrado].saldo = saldo_cliente;
-            printf("Saldo atual: %d \n",lista[idEncontrado].saldo);
-            printf("%d \n",saldo_cliente);
+            printf("Saldo atual: %lf \n",lista[idEncontrado].saldo);
+            printf("%lf \n",saldo_cliente);
     }
     if(encontrado ==0){
         printf("Cliente com cpf %s não encontrado.\n", cpf);
