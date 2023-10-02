@@ -25,8 +25,8 @@ void ApagaCliente(struct Cliente* lista, int* Quantidade_De_Clientes);
 void ListarClientes(struct Cliente* lista, int Quantidade_De_Clientes);
 void debito(struct Cliente *lista, int Quantidade_De_Clientes);
 void deposito(struct Cliente *lista, int Quantidade_De_Clientes) ;
-void extrato();
-void transferencia();
+void extrato(Cliente *lista, int Quantidade_De_Clientes);
+void transferencia(Cliente *lista, int Quantidade_De_Clientes);
 
 
 

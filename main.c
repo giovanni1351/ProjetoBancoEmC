@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "biblioteca.h"
+#include <stdlib.h>
+
 
 int main() {
     Cliente *lista=(Cliente*)malloc(sizeof(struct Cliente)*1000);
@@ -42,10 +44,10 @@ int main() {
                 deposito(lista,Quantidade_De_Clientes);
                 break;
             case 6:
-                extrato();
+                extrato(lista, Quantidade_De_Clientes);
                 break;
             case 7:
-                transferencia();
+                transferencia(lista, Quantidade_De_Clientes);
                 break;
             case 8:
                 ver = 1;

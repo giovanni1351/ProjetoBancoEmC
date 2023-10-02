@@ -6,6 +6,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "biblioteca.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 void ler_clientes(struct Cliente lista[], int *Quantidade_De_Clientes) {
     FILE *arquivo = fopen("Dados", "rb");//ele abre o arquivo como ler binario
     if (arquivo) {//se obter sucesso ele vai ler com o fread e armazenara no arquivo aberto
@@ -84,7 +89,7 @@ void ApagaCliente(struct Cliente* lista, int* Quantidade_De_Clientes){
     scanf("%s", cpf);
     for (int x = 0; x < (*Quantidade_De_Clientes); x++) {
         if (strcmp(lista[x].cpf, cpf) == 0) {
-            
+
             encontrado = 1;
             idEncontrado = x;
         }
@@ -177,14 +182,14 @@ void deposito(struct Cliente *lista, int Quantidade_De_Clientes) {
         }
     }
     if(encontrado ==1){
-            double valor;
-            double saldo_cliente = lista[idEncontrado].saldo;
-            printf("Valor do deposito:\n ");
-            scanf("%lf", &valor);
-            saldo_cliente += valor;
-            lista[idEncontrado].saldo = saldo_cliente;
-            printf("Saldo atual: %lf \n",lista[idEncontrado].saldo);
-            printf("%lf \n",saldo_cliente);
+        double valor;
+        double saldo_cliente = lista[idEncontrado].saldo;
+        printf("Valor do deposito:\n ");
+        scanf("%lf", &valor);
+        saldo_cliente += valor;
+        lista[idEncontrado].saldo = saldo_cliente;
+        printf("Saldo atual: %lf \n",lista[idEncontrado].saldo);
+        printf("%lf \n",saldo_cliente);
     }
     if(encontrado ==0){
         printf("Cliente com cpf %s não encontrado.\n", cpf);
@@ -193,21 +198,60 @@ void deposito(struct Cliente *lista, int Quantidade_De_Clientes) {
 
 
 void extrato(struct Cliente *lista, int Quantidade_De_Clientes) {
-    int cpf;
+    char cpf[15];
     printf("Digite o cpf: ");
-    scanf("%d", &cpf);
+    scanf("%s", cpf);
 
-
+    int encontrado = 0;
     for (int i = 0; i < Quantidade_De_Clientes; i++) {
-        if (lista[i].cpf == cpf) {
-            printf("Extrato %s (cpf: %d)\n", lista[i].nome, lista[i].cpf);
-            printf("Saldo: %d\n", lista[i].saldo);
-            return;
+        if (strcmp(lista[i].cpf, cpf) == 0) {
+            printf("Extrato de %s (CPF: %s)\n", lista[i].nome, lista[i].cpf);
+            printf("Saldo: %.2lf\n", lista[i].saldo);
+            encontrado = 1;
+            break;
         }
     }
-    printf("Cliente com cpf %d não encontrado.\n", cpf);
+    if (!encontrado) {
+        printf("Cliente com CPF %s não encontrado.\n", cpf);
+    }
 }
 
-void transferencia(){
-    printf("vamos la\n");
+void transferencia(Cliente *lista, int Quantidade_De_Clientes) {
+    char cpf_origem[15];
+    char cpf_destino[15];
+    double valor;
+
+    printf("Digite o CPF da conta de origem: ");
+    scanf("%s", cpf_origem);
+    printf("Digite o CPF da conta de destino: ");
+    scanf("%s", cpf_destino);
+    printf("Digite o valor a ser transferido: ");
+    scanf("%lf", &valor);
+
+    int origem_encontrada = 0;
+    int destino_encontrado = 0;
+    int id_origem, id_destino;
+
+    for (int i = 0; i < Quantidade_De_Clientes; i++) {
+        if (strcmp(lista[i].cpf, cpf_origem) == 0) {
+            origem_encontrada = 1;
+            id_origem = i;
+        }
+        if (strcmp(lista[i].cpf, cpf_destino) == 0) {
+            destino_encontrado = 1;
+            id_destino = i;
+        }
+    }
+
+    if (origem_encontrada && destino_encontrado) {
+        if (lista[id_origem].saldo >= valor) {
+            lista[id_origem].saldo -= valor;
+            lista[id_destino].saldo += valor;
+            printf("Transferência de %.2lf realizada com sucesso de %s para %s.\n", valor, cpf_origem, cpf_destino);
+        } else {
+            printf("Saldo insuficiente na conta de origem.\n");
+        }
+    } else {
+        printf("Conta de origem ou conta de destino não encontrada.\n");
+    }
 };
