@@ -139,7 +139,6 @@ void debito(struct Cliente *lista, int Quantidade_De_Clientes) {
 
             idEncontrado =x;
             encontrado =1;
-            printf("encontrado id: %d!\n",x);
             break;
         }
     }
@@ -147,50 +146,61 @@ void debito(struct Cliente *lista, int Quantidade_De_Clientes) {
         printf("Digite sua senha: \n");
         double taxa;
         int tipo = lista[idEncontrado].tipo;
+        double limite = -1000;
         if(tipo == 1){
             taxa = 1.05;
+            limite = -1000;
+
         }
         else if(tipo == 2){
+            limite = -5000;
             taxa = 1.03;
         }
         else{
             taxa = 1.05;
+            limite = -1000;
+
         }
         int senhaConta = lista[idEncontrado].senha;
-        printf("%d\n",lista[idEncontrado].senha);
         scanf("%d", &senha);
         if(senha == senhaConta){
             double valor;
             printf("Valor do débito:\n ");
             scanf("%lf", &valor);
-            //double saldo_cliente = lista[idEncontrado].saldo-valor;
-            //lista[idEncontrado].saldo = saldo_cliente;
-            lista[idEncontrado].saldo -= valor*taxa;
-            char valor_string[50] ;
-            char valor_taxa_string[50] ;
-            char valor_com_taxa[50];
-            sprintf(valor_string, "%.2lf",valor);
-            sprintf(valor_taxa_string, "%.2lf",valor *taxa-valor);
-            sprintf(valor_com_taxa, "%.2lf",valor*taxa);
-            char extrato[1000] ;// (char*)malloc(sizeof(char)*1000);
-            strcat(extrato,"Debitado: ");// "Depositado: ";
-            strcat(extrato,valor_string);
-            strcat(extrato," com o valor de taxa de : ");
-            strcat(extrato,valor_taxa_string);
-            strcat(extrato, " Total debitado: ");
-            strcat(extrato,valor_com_taxa);
-            time_t t;
-            struct tm *data_hora;
-            char data_string[50];
-            // Obtém o tempo atual
-            t = time(NULL);
-            data_hora = localtime(&t);
-            sprintf(data_string," Data: %02d/%02d/%04d Hora: %02d:%02d:%02d ", data_hora->tm_mday, data_hora->tm_mon + 1, data_hora->tm_year + 1900,data_hora->tm_hour, data_hora->tm_min, data_hora->tm_sec);
-            strcat(extrato,data_string);
-            strcpy( lista[idEncontrado].extrato[lista[idEncontrado].transacoes] ,extrato);
-            lista[idEncontrado].transacoes +=1;
-            printf("Saldo atual: %lf \n",lista[idEncontrado].saldo);
-            //printf("%lf \n",saldo_cliente);
+            double limite = -1000;
+            if(lista[idEncontrado].saldo - valor*taxa >=limite) {
+                lista[idEncontrado].saldo -= valor * taxa;
+                char valor_string[50];
+                char valor_taxa_string[50];
+                char valor_com_taxa[50];
+                sprintf(valor_string, "%.2lf", valor);
+                sprintf(valor_taxa_string, "%.2lf", valor * taxa - valor);
+                sprintf(valor_com_taxa, "%.2lf", valor * taxa);
+                char extrato[1000];// (char*)malloc(sizeof(char)*1000);
+                strcat(extrato, "Debitado: ");// "Depositado: ";
+                strcat(extrato, valor_string);
+                strcat(extrato, " com o valor de taxa de : ");
+                strcat(extrato, valor_taxa_string);
+                strcat(extrato, " Total debitado: ");
+                strcat(extrato, valor_com_taxa);
+                time_t t;
+                struct tm *data_hora;
+                char data_string[50];
+                // Obtém o tempo atual
+                t = time(NULL);
+                data_hora = localtime(&t);
+                sprintf(data_string, " Data: %02d/%02d/%04d Hora: %02d:%02d:%02d ", data_hora->tm_mday,
+                        data_hora->tm_mon + 1, data_hora->tm_year + 1900, data_hora->tm_hour, data_hora->tm_min,
+                        data_hora->tm_sec);
+                strcat(extrato, data_string);
+                strcpy(lista[idEncontrado].extrato[lista[idEncontrado].transacoes], extrato);
+                lista[idEncontrado].transacoes += 1;
+                printf("Saldo atual: %lf \n", lista[idEncontrado].saldo);
+                //printf("%lf \n",saldo_cliente);
+            }
+            else{
+                printf("Saldo insuficiente para o debito! \n");
+            }
         }
         else{
             printf("Senha incorreta!\n");
@@ -212,7 +222,6 @@ void deposito(struct Cliente *lista, int Quantidade_De_Clientes) {
 
             idEncontrado =x;
             encontrado =1;
-            printf("encontrado id: %d!\n",x);
             break;
         }
     }
@@ -260,14 +269,13 @@ void extrato(struct Cliente *lista, int Quantidade_De_Clientes) {
 
             idEncontrado =x;
             encontrado =1;
-            //printf("encontrado id: %d!\n",x);
+
             break;
         }
     }
     if(encontrado ==1){
         printf("Digite sua senha: \n");
         int senhaConta = lista[idEncontrado].senha;
-        printf("%d\n",lista[idEncontrado].senha);
         scanf("%d", &senha);
         if(senha == senhaConta){
             while(1) {
@@ -322,18 +330,23 @@ void transferencia(Cliente *lista, int Quantidade_De_Clientes) {
     if(encontrado ==1){
         printf("Digite sua senha: \n");
         int senhaConta = lista[idEncontrado].senha;
-        printf("%d\n",lista[idEncontrado].senha);
         int tipo = lista[idEncontrado].tipo;
         double taxa;
         scanf("%d", &senha);
+        double limite = -1000;
         if(tipo == 1){
             taxa = 1.05;
+            limite = -1000;
+
         }
         else if(tipo == 2){
+            limite = -5000;
             taxa = 1.03;
         }
         else{
             taxa = 1.05;
+            limite = -1000;
+
         }
         if(senha == senhaConta){
             char cpf_Destino[15];
@@ -355,46 +368,54 @@ void transferencia(Cliente *lista, int Quantidade_De_Clientes) {
                 printf("Destino encontrado: %s \n",cpf_Destino);
                 printf("Digite o valor a ser tranferido\n");
                 scanf("%lf",&valor);
-                lista[idEncontrado].saldo -=valor * taxa;
-                lista[idEncontrado_Destino].saldo += valor;
-                char valor_string[50] ;
-                char valor_taxa_string[50] ;
-                char valor_com_taxa[50];
-                sprintf(valor_taxa_string, "%.2lf",valor *taxa-valor);
-                sprintf(valor_com_taxa, "%.2lf",valor*taxa);
-                sprintf(valor_string, "%.2lf",valor);
-                char extrato_origem[1000] ;
-                char extrato_destino[1000] ;
+                if(lista[idEncontrado].saldo - valor*taxa >=limite) {
+                    lista[idEncontrado].saldo -= valor * taxa;
+                    lista[idEncontrado_Destino].saldo += valor;
+                    char valor_string[50];
+                    char valor_taxa_string[50];
+                    char valor_com_taxa[50];
+                    sprintf(valor_taxa_string, "%.2lf", valor * taxa - valor);
+                    sprintf(valor_com_taxa, "%.2lf", valor * taxa);
+                    sprintf(valor_string, "%.2lf", valor);
+                    char extrato_origem[1000];
+                    char extrato_destino[1000];
 
-                strcat(extrato_origem,"Transferido: ");
-                strcat(extrato_origem,valor_string);
-                strcat(extrato_origem," da conta: ");
-                strcat(extrato_origem,lista[idEncontrado].cpf);
-                strcat(extrato_origem," para a conta: ");
-                strcat(extrato_origem,lista[idEncontrado_Destino].cpf);
-                strcat(extrato_origem," com taxa de: ");
-                strcat(extrato_origem,valor_taxa_string);
-                strcat(extrato_origem, " Total subtraido do operante: ");
-                strcat(extrato_origem, valor_com_taxa);
-                strcpy(extrato_destino,extrato_origem);
-                time_t t;
-                struct tm *data_hora;
-                char data_string[50];
-                // Obtém o tempo atual
-                t = time(NULL);
-                data_hora = localtime(&t);
-                sprintf(data_string," Data: %02d/%02d/%04d Hora: %02d:%02d:%02d ", data_hora->tm_mday, data_hora->tm_mon + 1, data_hora->tm_year + 1900,data_hora->tm_hour, data_hora->tm_min, data_hora->tm_sec);
-                strcat(extrato_origem,data_string);
+                    strcat(extrato_origem, "Transferido: ");
+                    strcat(extrato_origem, valor_string);
+                    strcat(extrato_origem, " da conta: ");
+                    strcat(extrato_origem, lista[idEncontrado].cpf);
+                    strcat(extrato_origem, " para a conta: ");
+                    strcat(extrato_origem, lista[idEncontrado_Destino].cpf);
+                    strcat(extrato_origem, " com taxa de: ");
+                    strcat(extrato_origem, valor_taxa_string);
+                    strcat(extrato_origem, " Total subtraido do operante: ");
+                    strcat(extrato_origem, valor_com_taxa);
+                    strcpy(extrato_destino, extrato_origem);
+                    time_t t;
+                    struct tm *data_hora;
+                    char data_string[50];
+                    // Obtém o tempo atual
+                    t = time(NULL);
+                    data_hora = localtime(&t);
+                    sprintf(data_string, " Data: %02d/%02d/%04d Hora: %02d:%02d:%02d ", data_hora->tm_mday,
+                            data_hora->tm_mon + 1, data_hora->tm_year + 1900, data_hora->tm_hour, data_hora->tm_min,
+                            data_hora->tm_sec);
+                    strcat(extrato_origem, data_string);
 
-                strcpy( lista[idEncontrado].extrato[lista[idEncontrado].transacoes] ,extrato_origem);
+                    strcpy(lista[idEncontrado].extrato[lista[idEncontrado].transacoes], extrato_origem);
 
-                strcat(extrato_destino, " Valor do destinatário recebido: ");
-                strcat(extrato_destino,valor_string);
-                strcat(extrato_destino,data_string);
+                    strcat(extrato_destino, " Valor do destinatário recebido: ");
+                    strcat(extrato_destino, valor_string);
+                    strcat(extrato_destino, data_string);
 
-                strcpy( lista[idEncontrado_Destino].extrato[lista[idEncontrado_Destino].transacoes] ,extrato_destino);
-                lista[idEncontrado].transacoes +=1;
-                lista[idEncontrado_Destino].transacoes +=1;
+                    strcpy(lista[idEncontrado_Destino].extrato[lista[idEncontrado_Destino].transacoes],
+                           extrato_destino);
+                    lista[idEncontrado].transacoes += 1;
+                    lista[idEncontrado_Destino].transacoes += 1;
+                }
+                else{
+                    printf("Valor insuficiente para a transferencia! \n");
+                }
             }
             else{
                 printf("CPF do destino não encontrado!\n");
