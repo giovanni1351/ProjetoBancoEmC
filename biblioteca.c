@@ -1,5 +1,5 @@
 //
-// Created by unifgmorassi on 28/09/2023.
+// Created by unifgmorassi on 18/10/2023.
 //
 
 #include "biblioteca.h"
@@ -14,16 +14,29 @@ void limpa(){
     while ((c = getchar()) != '\n' && c != EOF) { }
 }
 void ler_clientes(struct Cliente lista[], int *Quantidade_De_Clientes) {
-    FILE *arquivo = fopen("BancoDeDadosClientes", "rb");//ele abre o arquivo como ler binario
-    if (arquivo) {//se obter sucesso ele vai ler com o fread e armazenara no arquivo aberto
-        //as informaçoes ficarão na lista q foi passada como parametro
-        while (fread(&lista[*Quantidade_De_Clientes], sizeof(struct Cliente), 1, arquivo) == 1) {
-            (*Quantidade_De_Clientes)++;//ele vai ler de 1 em 1 até o fim do arquivo, a cada leitura ele soma 1 na quantidade de clientes
-            //para manter o controle de clientes
-        }
-        fclose(arquivo);//ele fecha o arquivo
+    FILE *arquivo = fopen("BancoDeDadosClientes", "rb");
+    if (arquivo) {
+        fseek(arquivo, 0, SEEK_END);
+        long tamanho_arquivo = ftell(arquivo);
+        rewind(arquivo);
+        *Quantidade_De_Clientes = tamanho_arquivo / sizeof(struct Cliente);
+        fread(lista, sizeof(struct Cliente), *Quantidade_De_Clientes, arquivo);
+        fclose(arquivo);
     }
 }
+
+/*void ler_clientes(struct Cliente lista[], int *Quantidade_De_Clientes) {
+        FILE *arquivo = fopen("BancoDeDadosClientes", "rb");//ele abre o arquivo como ler binario
+        if (arquivo) {//se obter sucesso ele vai ler com o fread e armazenara no arquivo aberto
+            //as informaçoes ficarão na lista q foi passada como parametro
+            while (fread(&lista[*Quantidade_De_Clientes], sizeof(struct Cliente), 1, arquivo) == 1) {
+                (*Quantidade_De_Clientes)++;//ele vai ler de 1 em 1 até o fim do arquivo, a cada leitura ele soma 1 na quantidade de clientes
+                //para manter o controle de clientes
+            }
+            fclose(arquivo);//ele fecha o arquivo
+        }
+    }
+*/
 void salva_cliente(struct Cliente lista[], int Quantidade_De_Clientes) {
     FILE *arquivo = fopen("BancoDeDadosClientes", "wb");//abre o arquivo como write em binario
 
@@ -33,7 +46,6 @@ void salva_cliente(struct Cliente lista[], int Quantidade_De_Clientes) {
         fclose(arquivo);//fecha o arquivo
     }
 }
-//função para criar um novo cliente
 void NovoCliente(struct Cliente *lista,int *Quantidade_De_Clientes){
     //ele pede o CPF
     printf("Digite seu CPF:\n");
@@ -58,9 +70,9 @@ void NovoCliente(struct Cliente *lista,int *Quantidade_De_Clientes){
         }
     }
     if (encontrado == 0) {
-        //caso n encontrado ele começa a pedir as informações
+        //caso nao encontrado ele começa a pedir as informações
         Cliente atual;
-        //struct atual q sera preenchida com as informações
+        //struct atual que sera preenchida com as informações
         atual.saldo =0;
         //o saldo iniciará com o 0
         atual.transacoes =0;
@@ -117,59 +129,6 @@ void NovoCliente(struct Cliente *lista,int *Quantidade_De_Clientes){
         }
     }
     printf("\n");
-}
-void ApagaCliente(struct Cliente* lista, int* Quantidade_De_Clientes){
-    //função para apagar o cliente
-    printf("Digite seu CPF:\n");
-    //ele vai pedir o cpf
-    char cpf[15];
-    //o cpf é um string(array de char)
-    int encontrado = 0;
-    int idEncontrado;
-    int deletar = 0;
-    scanf("%s", &cpf);
-    //ele vai digitar e vai salvar no CPF
-    for (int x = 0; x < (*Quantidade_De_Clientes); x++) {
-        if (strcmp(lista[x].cpf, cpf) == 0) {
-            //strcmp vai comparar as 2 string e caso seja 0 quer dizer q são iguais
-            // ou seja neste caso como ele vai varrer a lista
-            // para encontrar o cliente, caso igual cliente encontrado
-            encontrado = 1;
-            //variavel booleana para caso encontrado ou n , (caso n ela mantem em 0)
-
-            idEncontrado = x;
-            //variavel para salvar a posição na lista
-        }
-    }
-    if (encontrado == 1) {
-        //caso encontrado ele vai pedir a senha para verificar
-        printf("Digite sua senha: \n");
-        long long int senha;
-        long long int senha_cliente = lista[idEncontrado].senha;
-        scanf("%lld", &senha);
-        if (senha_cliente == senha) {
-            //caso a senha digitada seja igual a senha salva na lista
-            printf("Deletando!\n");
-
-            deletar = 1;
-            //variavel para saber caso ele queira deletar vai ser ativada
-            //caso seja verdadeiro o if
-        }
-    }
-    if (deletar == 1) {
-        //ao deletar ele vai percorrer a lista tendo como inicio
-        //a posição encontrada.
-        // ele vai pegar o cliente da posição da frente e vai atualizar para a anterior
-        for (int x = idEncontrado; x < (*Quantidade_De_Clientes); x++) {
-            lista[x] = lista[x + 1];
-        }
-        //depois de atualizar todos os indices da lista ele vai subtrair 1 da quantidade de clientes;
-        (*Quantidade_De_Clientes) -= 1;
-        printf("Cliente deletado com sucesso!\n");
-    }
-    else{
-        printf("Senha incorreta!\n");
-    }
 }
 void ListarClientes(struct Cliente* lista, int Quantidade_De_Clientes){
     //para listar a função vai receber a lista e a quantidade de clientes
@@ -278,7 +237,7 @@ void debito(struct Cliente *lista, int Quantidade_De_Clientes) {
                         data_hora->tm_mon + 1, data_hora->tm_year + 1900, data_hora->tm_hour, data_hora->tm_min,
                         data_hora->tm_sec);
                 strcat(extrato, data_string);
-                strcpy(lista[idEncontrado].extrato[lista[idEncontrado].transacoes], extrato);
+                strcpy(lista[idEncontrado].extrato[lista[idEncontrado].transacoes%100], extrato);
                 //nesta linha ele vai na posição da quantidade de transações q ele fez e vai salvar a variavel extrato
                 // na struct com o strcpy
                 lista[idEncontrado].transacoes += 1;
@@ -303,8 +262,64 @@ void debito(struct Cliente *lista, int Quantidade_De_Clientes) {
         printf("Cliente com cpf %s não encontrado.\n", cpf);
     }
 }
+void ApagaCliente(struct Cliente* lista, int* Quantidade_De_Clientes){
+    //função para apagar o cliente
+    printf("Digite seu CPF:\n");
+    //ele vai pedir o cpf
+    char cpf[15];
+    //o cpf é um string(array de char)
+    int encontrado = 0;
+    int idEncontrado;
+    int deletar = 0;
+    scanf("%s", &cpf);
+    //ele vai digitar e vai salvar no CPF
+    for (int x = 0; x < (*Quantidade_De_Clientes); x++) {
+        if (strcmp(lista[x].cpf, cpf) == 0) {
+            //strcmp vai comparar as 2 string e caso seja 0 quer dizer q são iguais
+            // ou seja neste caso como ele vai varrer a lista
+            // para encontrar o cliente, caso igual cliente encontrado
+            encontrado = 1;
+            //variavel booleana para caso encontrado ou n , (caso n ela mantem em 0)
+
+            idEncontrado = x;
+            //variavel para salvar a posição na lista
+        }
+    }
+    if (encontrado == 1) {
+        //caso encontrado ele vai pedir a senha para verificar
+        printf("Digite sua senha: \n");
+        long long int senha;
+        long long int senha_cliente = lista[idEncontrado].senha;
+        scanf("%lld", &senha);
+        if (senha_cliente == senha) {
+            //caso a senha digitada seja igual a senha salva na lista
+            printf("Deletando!\n");
+
+            deletar = 1;
+            //variavel para saber caso ele queira deletar vai ser ativada
+            //caso seja verdadeiro o if
+        }
+    }
+    if (deletar == 1) {
+        //ao deletar ele vai percorrer a lista tendo como inicio
+        //a posição encontrada.
+        // ele vai pegar o cliente da posição da frente e vai atualizar para a anterior
+        for (int x = idEncontrado; x < (*Quantidade_De_Clientes); x++) {
+            lista[x] = lista[x + 1];
+        }
+        //depois de atualizar todos os indices da lista ele vai subtrair 1 da quantidade de clientes;
+        (*Quantidade_De_Clientes) -= 1;
+        printf("Cliente deletado com sucesso!\n");
+    }
+    else{
+        printf("Senha incorreta!\n");
+    }
+}
+
+
 
 void deposito(struct Cliente *lista, int Quantidade_De_Clientes) {
+
     //para o deposito será solicitado apenas o cpf e o valor a ser depoisitado
     char cpf[15];
     printf("Digite o CPF: \n");
@@ -351,7 +366,7 @@ void deposito(struct Cliente *lista, int Quantidade_De_Clientes) {
         data_hora = localtime(&t);
         sprintf(data_string," Data: %02d/%02d/%04d Hora: %02d:%02d:%02d ", data_hora->tm_mday, data_hora->tm_mon + 1, data_hora->tm_year + 1900,data_hora->tm_hour, data_hora->tm_min, data_hora->tm_sec);
         strcat(extrato,data_string);
-        strcpy( lista[idEncontrado].extrato[lista[idEncontrado].transacoes] ,extrato);
+        strcpy( lista[idEncontrado].extrato[lista[idEncontrado].transacoes%100] ,extrato);
         //salva o extrato na posição do idencontrado no extrato na matriz da posição da
         //quantidade de trasaçõeso
         lista[idEncontrado].transacoes +=1;
@@ -364,83 +379,6 @@ void deposito(struct Cliente *lista, int Quantidade_De_Clientes) {
         printf("Cliente com cpf %s não encontrado.\n", cpf);
     }
 }
-
-
-void extrato(struct Cliente *lista, int Quantidade_De_Clientes) {
-    // agora para o extrato como nas outras funções será solicitado o cpf e senha
-    int  senha;
-    char cpf[15];
-    printf("Extrato! \n");
-    printf("Digite o CPF: \n");
-    scanf("%s", &cpf);
-    int idEncontrado;
-    int encontrado =0;
-    for(int x = 0 ; x < Quantidade_De_Clientes;x++){
-        if(strcmp(cpf,lista[x].cpf)==0){
-            //strcmp vai comparar as 2 string e caso seja 0 quer dizer q são iguais
-            // ou seja neste caso como ele vai varrer a lista
-            // para encontrar o cliente, caso igual cliente encontrado
-            encontrado = 1;
-            //variavel booleana para caso encontrado ou n , (caso n ela mantem em 0)
-
-            idEncontrado = x;
-            //variavel para salvar a posição na lista
-            break;
-            //ele da um break no for para caso seja encontrado
-        }
-    }
-    if(encontrado ==1){
-        //casos encontrado ai sim sera solicitado a senha
-        printf("Digite sua senha: \n");
-        int senhaConta = lista[idEncontrado].senha;
-        scanf("%d", &senha);
-        if(senha == senhaConta){
-            //caso a senha seja correta
-            while(1) {
-                //abrirá um menu com o while true para q ele possa escolher
-                //ver o saldo, o extrato ou sair para o menu principal
-                int escolha = 0;
-                printf("Seja bem vindo ao seu extrato!\n");
-                printf("Digite o que deseja fazer(Digite o numero da operação)\n");
-                printf("1.Ver saldo\n");
-                printf("2.Ver histórico de transferencia\n");
-                printf("3.Sair do extrato!\n");
-                scanf("%d", &escolha);
-                if (escolha == 2) {
-                    //caso ele queira ver o histórico de transferencia
-                    // ele vai pegar a quantidade de transações q ele fez
-                    // e armazenara na variavel transferencisa
-                    int transferencias = lista[idEncontrado].transacoes;
-                    for (int x = 0; x < transferencias; x++) {
-                        //neste for ele vai pegar na matriz extrato da struct cliente na posição do
-                        //cliente q foi armazenada no idEncontrado e vai varrer a quantidade de transações
-                        //feitas
-                        printf("%s\n", lista[idEncontrado].extrato[x]);
-                    }
-                } else if (escolha == 1) {
-                    //caso 1 ele vai apenas printar o saldo
-                    double saldo_cliente = lista[idEncontrado].saldo;
-                    printf("Seu saldo é:\n");
-                    printf("S: %.2lf\n", saldo_cliente);
-                }
-                else if(escolha == 3){
-                    //caso 3 ele vai apenas dar um break no while true assim terminando a
-                    // a tarefa extrato
-                    break;
-                }
-            }
-        }
-        else{
-            //caso a senha digitada n seja igual a salva na lista
-            printf("Senha incorreta!\n");
-        }
-    }
-    if(encontrado ==0){
-        //se o cpf digitado n for encontrado na lista de clientes
-        printf("Cliente com cpf %s não encontrado.\n", cpf);
-    }
-}
-
 void transferencia(Cliente *lista, int Quantidade_De_Clientes) {
     //para a transferencia, será solicitado CPF do operante, senha do operante, cpf do destinatário
     //e o valor da transferencia
@@ -564,7 +502,7 @@ void transferencia(Cliente *lista, int Quantidade_De_Clientes) {
                             data_hora->tm_sec);
                     strcat(extrato_origem, data_string);
                     //nas linhas de cima ele salva o momento da operação na msg de extrato do operando
-                    strcpy(lista[idEncontrado].extrato[lista[idEncontrado].transacoes], extrato_origem);
+                    strcpy(lista[idEncontrado].extrato[lista[idEncontrado].transacoes%100], extrato_origem);
                     //aqui ele salva a mensagem na conta do cliente na lista da posição do id encontrado
                     // e na matriz de extrato ele salva na posição da transações do cliente de origem
 
@@ -575,7 +513,7 @@ void transferencia(Cliente *lista, int Quantidade_De_Clientes) {
                     //apenas depois ele salva a data
                     strcat(extrato_destino, data_string);
 
-                    strcpy(lista[idEncontrado_Destino].extrato[lista[idEncontrado_Destino].transacoes],
+                    strcpy(lista[idEncontrado_Destino].extrato[lista[idEncontrado_Destino].transacoes%100],
                            extrato_destino);
                     //aqui ele salva a mensagem na conta do cliente na lista da posição do id encontrado do destino
                     // e na matriz de extrato ele salva na posição da transações do cliente do destino
@@ -588,17 +526,17 @@ void transferencia(Cliente *lista, int Quantidade_De_Clientes) {
                     //soma +1 nas 2 conta, cliente origem e destino
 
                 }
-                // o valor da tranferencia e realizado se os requesitos acima forem corretos
+                    // o valor da tranferencia e realizado se os requesitos acima forem corretos
                 else{
                     printf("Valor insuficiente para a transferencia! \n");
                 }
             }
-            //caso o valor nao for suficiete essa mensagem aparece
+                //caso o valor nao for suficiete essa mensagem aparece
             else{
                 printf("CPF do destino não encontrado!\n");
             }
         }
-        //caso a senha n seja compativel mesagem de erro:
+            //caso a senha n seja compativel mesagem de erro:
         else{
             printf("Senha incorreta!\n");
         }
@@ -608,3 +546,81 @@ void transferencia(Cliente *lista, int Quantidade_De_Clientes) {
         printf("Cliente com cpf %s não encontrado.\n", cpf);
     }
 };
+
+
+
+void extrato(struct Cliente *lista, int Quantidade_De_Clientes) {
+    // agora para o extrato como nas outras funções será solicitado o cpf e senha
+    int  senha;
+    char cpf[15];
+    printf("Extrato! \n");
+    printf("Digite o CPF: \n");
+    scanf("%s", &cpf);
+    int idEncontrado;
+    int encontrado =0;
+    for(int x = 0 ; x < Quantidade_De_Clientes;x++){
+        if(strcmp(cpf,lista[x].cpf)==0){
+            //strcmp vai comparar as 2 string e caso seja 0 quer dizer q são iguais
+            // ou seja neste caso como ele vai varrer a lista
+            // para encontrar o cliente, caso igual cliente encontrado
+            encontrado = 1;
+            //variavel booleana para caso encontrado ou n , (caso n ela mantem em 0)
+
+            idEncontrado = x;
+            //variavel para salvar a posição na lista
+            break;
+            //ele da um break no for para caso seja encontrado
+        }
+    }
+    if(encontrado ==1){
+        //casos encontrado ai sim sera solicitado a senha
+        printf("Digite sua senha: \n");
+        int senhaConta = lista[idEncontrado].senha;
+        scanf("%d", &senha);
+        if(senha == senhaConta){
+            //caso a senha seja correta
+            while(1) {
+                //abrirá um menu com o while true para q ele possa escolher
+                //ver o saldo, o extrato ou sair para o menu principal
+                int escolha = 0;
+                printf("Seja bem vindo ao seu extrato!\n");
+                printf("Digite o que deseja fazer(Digite o numero da operação)\n");
+                printf("1.Ver saldo\n");
+                printf("2.Ver histórico de transferencia\n");
+                printf("3.Sair do extrato!\n");
+                scanf("%d", &escolha);
+                if (escolha == 2) {
+                    //caso ele queira ver o histórico de transferencia
+                    // ele vai pegar a quantidade de transações q ele fez
+                    // e armazenara na variavel transferencisa
+                    int transferencias = lista[idEncontrado].transacoes;
+                    for (int x = 0; x < transferencias; x++) {
+                        //neste for ele vai pegar na matriz extrato da struct cliente na posição do
+                        //cliente q foi armazenada no idEncontrado e vai varrer a quantidade de transações
+                        //feitas
+                        printf("%s\n", lista[idEncontrado].extrato[x]);
+                    }
+                } else if (escolha == 1) {
+                    //caso 1 ele vai apenas printar o saldo
+                    double saldo_cliente = lista[idEncontrado].saldo;
+                    printf("Seu saldo é:\n");
+                    printf("S: %.2lf\n", saldo_cliente);
+                }
+                else if(escolha == 3){
+                    //caso 3 ele vai apenas dar um break no while true assim terminando a
+                    // a tarefa extrato
+                    break;
+                }
+            }
+        }
+        else{
+            //caso a senha digitada n seja igual a salva na lista
+            printf("Senha incorreta!\n");
+        }
+    }
+    if(encontrado ==0){
+        //se o cpf digitado n for encontrado na lista de clientes
+        printf("Cliente com cpf %s não encontrado.\n", cpf);
+    }
+}
+
